@@ -170,9 +170,9 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     _focusAttachment = _focusNode.attach(context);
     _input = InputConnectionController(
       _handleRemoteValueChange,
-      obscureText: widget.obscureText,
-      autoCorrect: widget.autoCorrect,
-      textCapitalization: widget.textCapitalization,
+      widget.obscureText,
+      widget.autoCorrect,
+      widget.textCapitalization,
     );
     _updateSubscriptions();
   }
