@@ -27,6 +27,9 @@ class ZefyrEditor extends StatefulWidget {
     this.imageDelegate,
     this.selectionControls,
     this.physics,
+    this.obscureText = false,
+    this.autoCorrect = true,
+    this.textCapitalization = TextCapitalization.sentences
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -65,6 +68,11 @@ class ZefyrEditor extends StatefulWidget {
 
   /// Controls physics of scrollable editor.
   final ScrollPhysics physics;
+
+  /// Controls the input parameters for the editor
+  final bool obscureText;
+  final bool autoCorrect;
+  final TextCapitalization textCapitalization;
 
   /// Padding around editable area.
   final EdgeInsets padding;
@@ -187,6 +195,9 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       mode: widget.mode,
       padding: widget.padding,
       physics: widget.physics,
+      obscureText: widget.obscureText,
+      autoCorrect: widget.autoCorrect,
+      textCapitalization: widget.textCapitalization,
     );
 
     return ZefyrTheme(

@@ -40,9 +40,9 @@ class ZefyrEditableText extends StatefulWidget {
       this.mode: ZefyrMode.edit,
       this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
       this.physics,
-      this.obscureText = false,
-      this.autoCorrect = true,
-      this.textCapitalization = TextCapitalization.sentences})
+      this.obscureText,
+      this.autoCorrect,
+      this.textCapitalization})
       : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -70,6 +70,7 @@ class ZefyrEditableText extends StatefulWidget {
   /// Controls physics of scrollable text field.
   final ScrollPhysics physics;
 
+  /// Controls the input parameters for the editor
   final bool obscureText;
   final bool autoCorrect;
   final TextCapitalization textCapitalization;
