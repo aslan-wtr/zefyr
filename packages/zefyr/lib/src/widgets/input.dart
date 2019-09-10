@@ -9,14 +9,21 @@ typedef RemoteValueChanged = Function(
     int start, String deleted, String inserted, TextSelection selection);
 
 class InputConnectionController implements TextInputClient {
-  InputConnectionController(this.onValueChanged)
-      : assert(onValueChanged != null);
+  InputConnectionController(
+    this.onValueChanged,
+    this.obscureText,
+    this.autoCorrect,
+    this.textCapitalization,
+  ) : assert(onValueChanged != null);
 
   //
   // New public members
   //
 
   final RemoteValueChanged onValueChanged;
+  final bool obscureText;
+  final bool autoCorrect;
+  final TextCapitalization textCapitalization;
 
   /// Returns `true` if there is open input connection.
   bool get hasConnection =>
@@ -24,7 +31,10 @@ class InputConnectionController implements TextInputClient {
 
   /// Opens or closes input connection based on the current state of
   /// [focusNode] and [value].
-  void openOrCloseConnection(FocusNode focusNode, TextEditingValue value) {
+  void openOrCloseConnection(
+    FocusNode focusNode,
+    TextEditingValue value,
+  ) {
     if (focusNode.hasFocus && focusNode.consumeKeyboardToken()) {
       openConnection(value);
     } else if (!focusNode.hasFocus) {
@@ -39,10 +49,10 @@ class InputConnectionController implements TextInputClient {
         this,
         TextInputConfiguration(
           inputType: TextInputType.multiline,
-          obscureText: false,
-          autocorrect: true,
+          obscureText: obscureText,
+          autocorrect: autoCorrect,
           inputAction: TextInputAction.newline,
-          textCapitalization: TextCapitalization.sentences,
+          textCapitalization: textCapitalization,
         ),
       )..setEditingState(value);
       _sentRemoteValues.add(value);

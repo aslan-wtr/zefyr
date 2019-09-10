@@ -30,17 +30,20 @@ import 'theme.dart';
 /// Consider using [ZefyrEditor] which wraps this widget and adds a toolbar to
 /// edit style attributes.
 class ZefyrEditableText extends StatefulWidget {
-  const ZefyrEditableText({
-    Key key,
-    @required this.controller,
-    @required this.focusNode,
-    @required this.imageDelegate,
-    this.selectionControls,
-    this.autofocus: true,
-    this.mode: ZefyrMode.edit,
-    this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    this.physics,
-  })  : assert(mode != null),
+  const ZefyrEditableText(
+      {Key key,
+      @required this.controller,
+      @required this.focusNode,
+      @required this.imageDelegate,
+      this.selectionControls,
+      this.autofocus: true,
+      this.mode: ZefyrMode.edit,
+      this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      this.physics,
+      this.obscureText = false,
+      this.autoCorrect = true,
+      this.textCapitalization = TextCapitalization.sentences})
+      : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
         super(key: key);
@@ -66,6 +69,10 @@ class ZefyrEditableText extends StatefulWidget {
 
   /// Controls physics of scrollable text field.
   final ScrollPhysics physics;
+
+  final bool obscureText;
+  final bool autoCorrect;
+  final TextCapitalization textCapitalization;
 
   /// Optional delegate for building the text selection handles and toolbar.
   ///
@@ -160,7 +167,12 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
     _focusNode = widget.focusNode;
     super.initState();
     _focusAttachment = _focusNode.attach(context);
-    _input = InputConnectionController(_handleRemoteValueChange);
+    _input = InputConnectionController(
+      _handleRemoteValueChange,
+      obscureText: widget.obscureText,
+      autoCorrect: widget.autoCorrect,
+      textCapitalization: widget.textCapitalization,
+    );
     _updateSubscriptions();
   }
 
