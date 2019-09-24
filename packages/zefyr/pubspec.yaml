@@ -17,6 +17,7 @@ dependencies:
     git:
       url: https://github.com/aslan-wtr/zefyr.git
       path: 'packages/notus'
+      ref: master
   meta: ^1.1.0
   quiver_hashcode: ^2.0.0
 
