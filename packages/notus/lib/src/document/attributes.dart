@@ -69,6 +69,8 @@ abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
 ///   * [NotusAttribute.link]
 ///   * [NotusAttribute.heading]
 ///   * [NotusAttribute.block]
+///   * [NotusAttribute.textColor]
+///   * [NotusAttribute.backgroundColor]
 class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static final Map<String, NotusAttributeBuilder> _registry = {
     NotusAttribute.bold.key: NotusAttribute.bold,
@@ -77,6 +79,8 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
     NotusAttribute.heading.key: NotusAttribute.heading,
     NotusAttribute.block.key: NotusAttribute.block,
     NotusAttribute.embed.key: NotusAttribute.embed,
+    NotusAttribute.textColor.key: NotusAttribute.textColor,
+    NotusAttribute.backgroundColor.key: NotusAttribute.backgroundColor,
   };
 
   // Inline attributes
@@ -106,6 +110,12 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
 
   /// Block attribute
   static const block = const BlockAttributeBuilder._();
+
+  /// Text color style attribute.
+  static const textColor = const _TextColorAttributeBuilder._();
+
+  /// Background color style attribute.
+  static const backgroundColor = const _BackgroundColorAttributeBuilder._();
 
   /// Alias for [NotusAttribute.block.bulletList].
   static NotusAttribute<String> get ul => block.bulletList;
@@ -377,6 +387,35 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
   /// Formats a block of lines as a quote.
   NotusAttribute<String> get quote =>
       new NotusAttribute<String>._(key, scope, 'quote');
+}
+
+/// Builder for text color attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.textColor] instead.
+class _TextColorAttributeBuilder extends NotusAttributeBuilder<List<int>> {
+  static const _cLink = 'tc';
+  const _TextColorAttributeBuilder._()
+      : super._(_cLink, NotusAttributeScope.inline);
+
+  /// Creates a color attribute with specified link [value].
+  NotusAttribute<List<int>> fromString(List<int> value) =>
+      new NotusAttribute<List<int>>._(key, scope, value);
+}
+
+/// Builder for text color attribute values.
+///
+/// There is no need to use this class directly, consider using
+/// [NotusAttribute.backgroundColor] instead.
+class _BackgroundColorAttributeBuilder
+    extends NotusAttributeBuilder<List<int>> {
+  static const _cLink = 'tc';
+  const _BackgroundColorAttributeBuilder._()
+      : super._(_cLink, NotusAttributeScope.inline);
+
+  /// Creates a color attribute with specified link [value].
+  NotusAttribute<List<int>> fromString(List<int> value) =>
+      new NotusAttribute<List<int>>._(key, scope, value);
 }
 
 class EmbedAttributeBuilder

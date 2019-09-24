@@ -26,6 +26,8 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
     NotusAttribute.ul: '* ',
     NotusAttribute.ol: '1. ',
   };
+  static const kTextColor = '&tc&';
+  static const kBackgroundColor = '&bc&';
 
   @override
   String convert(Delta input) {
@@ -168,6 +170,10 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
       _writeHeadingTag(buffer, attribute as NotusAttribute<int>);
     } else if (attribute.key == NotusAttribute.block.key) {
       _writeBlockTag(buffer, attribute as NotusAttribute<String>, close: close);
+    } else if (attribute.key == NotusAttribute.textColor.key) {
+      _writeTextColorTag(buffer);
+    } else if (attribute.key == NotusAttribute.backgroundColor.key) {
+      _writeBackgroundColorTag(buffer);
     } else {
       throw new ArgumentError('Cannot handle $attribute');
     }
@@ -209,5 +215,13 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
       final tag = kSimpleBlocks[block];
       buffer.write(tag);
     }
+  }
+
+  void _writeTextColorTag(StringBuffer buffer) {
+    buffer.write(kTextColor);
+  }
+
+  void _writeBackgroundColorTag(StringBuffer buffer) {
+    buffer.write(kBackgroundColor);
   }
 }
