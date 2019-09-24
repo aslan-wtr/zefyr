@@ -394,9 +394,9 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
 /// There is no need to use this class directly, consider using
 /// [NotusAttribute.textColor] instead.
 class _TextColorAttributeBuilder extends NotusAttributeBuilder<List<int>> {
-  static const _cLink = 'tc';
+  static const _kTextColor = 'tc';
   const _TextColorAttributeBuilder._()
-      : super._(_cLink, NotusAttributeScope.inline);
+      : super._(_kTextColor, NotusAttributeScope.inline);
 
   /// Creates a color attribute with specified link [value].
   NotusAttribute<List<int>> fromString(List<int> value) =>
@@ -409,9 +409,9 @@ class _TextColorAttributeBuilder extends NotusAttributeBuilder<List<int>> {
 /// [NotusAttribute.backgroundColor] instead.
 class _BackgroundColorAttributeBuilder
     extends NotusAttributeBuilder<List<int>> {
-  static const _cLink = 'tc';
+  static const _kBackgroundColor = 'bc';
   const _BackgroundColorAttributeBuilder._()
-      : super._(_cLink, NotusAttributeScope.inline);
+      : super._(_kBackgroundColor, NotusAttributeScope.inline);
 
   /// Creates a color attribute with specified link [value].
   NotusAttribute<List<int>> fromString(List<int> value) =>
