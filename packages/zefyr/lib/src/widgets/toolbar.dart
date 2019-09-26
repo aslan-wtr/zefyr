@@ -220,7 +220,7 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
     // new state each time we toggle overlay.
     final toolbar = ZefyrToolbarScaffold(
       key: _toolbarKey,
-      body: ZefyrButtonList(buttons: _buildButtons(context)),
+      body: ZefyrButtonList(buttons: _buildButtonsEmpty(context)),
       trailing: buildButton(context, ZefyrToolbarAction.hideKeyboard),
     );
 
@@ -262,6 +262,10 @@ class ZefyrToolbarState extends State<ZefyrToolbar>
       if (editor.imageDelegate != null) ImageButton(),
     ];
     return buttons;
+  }
+
+  List<Widget> _buildButtonsEmpty(BuildContext context) {
+    return <Widget>[];
   }
 }
 
