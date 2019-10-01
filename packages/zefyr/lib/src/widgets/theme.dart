@@ -49,6 +49,21 @@ class ZefyrTheme extends InheritedWidget {
         '$ZefyrTheme.of() called with a context that does not contain a ZefyrEditor.');
     return widget.data;
   }
+
+  static ZefyrThemeData applyFontFamily(
+    ZefyrThemeData themeData,
+    String fontFamily,
+  ) {
+    final fontStyleTheme = ZefyrThemeData(
+      paragraphTheme: StyleTheme(
+        padding: themeData.paragraphTheme.padding,
+        textStyle:
+            themeData.paragraphTheme.textStyle.copyWith(fontFamily: fontFamily),
+      ),
+    );
+
+    return themeData.merge(fontStyleTheme);
+  }
 }
 
 /// Holds colors and typography styles for [ZefyrEditor].
@@ -109,7 +124,6 @@ class ZefyrThemeData {
   });
 
   ZefyrThemeData copyWith({
-    TextStyle textStyle,
     TextStyle boldStyle,
     TextStyle italicStyle,
     TextStyle linkStyle,
