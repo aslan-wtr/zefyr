@@ -31,6 +31,7 @@ class ZefyrEditor extends StatefulWidget {
     this.autoCorrect = true,
     this.textCapitalization = TextCapitalization.sentences,
     this.fontFamily,
+    this.fontSize,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -80,6 +81,9 @@ class ZefyrEditor extends StatefulWidget {
 
   /// Font for the editor text
   final String fontFamily;
+
+  /// Font size for the editor text
+  final double fontSize;
 
   @override
   _ZefyrEditorState createState() => _ZefyrEditorState();
@@ -157,6 +161,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
         ? fallbackTheme.merge(parentTheme)
         : fallbackTheme;
     _themeData = ZefyrTheme.applyFontFamily(_themeData, widget.fontFamily);
+    _themeData = ZefyrTheme.applyFontSize(_themeData, widget.fontSize);
 
     if (_scope == null) {
       _scope = ZefyrScope.editable(

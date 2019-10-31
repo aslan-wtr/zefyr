@@ -64,6 +64,21 @@ class ZefyrTheme extends InheritedWidget {
 
     return themeData.merge(fontStyleTheme);
   }
+
+  static ZefyrThemeData applyFontSize(
+    ZefyrThemeData themeData,
+    double fontSize,
+  ) {
+    final fontStyleTheme = ZefyrThemeData(
+      paragraphTheme: StyleTheme(
+        padding: themeData.paragraphTheme.padding,
+        textStyle:
+            themeData.paragraphTheme.textStyle.copyWith(fontSize: fontSize),
+      ),
+    );
+
+    return themeData.merge(fontStyleTheme);
+  }
 }
 
 /// Holds colors and typography styles for [ZefyrEditor].
