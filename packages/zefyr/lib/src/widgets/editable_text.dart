@@ -3,6 +3,7 @@
 // BSD-style license that can be found in the LICENSE file.
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:notus/notus.dart';
 
@@ -30,20 +31,21 @@ import 'theme.dart';
 /// Consider using [ZefyrEditor] which wraps this widget and adds a toolbar to
 /// edit style attributes.
 class ZefyrEditableText extends StatefulWidget {
-  const ZefyrEditableText(
-      {Key key,
-      @required this.controller,
-      @required this.focusNode,
-      @required this.imageDelegate,
-      this.selectionControls,
-      this.autofocus: true,
-      this.mode: ZefyrMode.edit,
-      this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      this.physics,
-      this.obscureText,
-      this.autoCorrect,
-      this.textCapitalization})
-      : assert(mode != null),
+  const ZefyrEditableText({
+    Key key,
+    @required this.controller,
+    @required this.focusNode,
+    @required this.imageDelegate,
+    this.selectionControls,
+    this.autofocus: true,
+    this.mode: ZefyrMode.edit,
+    this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    this.physics,
+    this.obscureText,
+    this.autoCorrect,
+    this.textCapitalization,
+    this.preventDefaultKeyboard: false,
+  })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
         super(key: key);
@@ -83,6 +85,9 @@ class ZefyrEditableText extends StatefulWidget {
   /// Padding around editable area.
   final EdgeInsets padding;
 
+  /// Prevent default keyboard when focusing, tapping the editor or similar
+  final bool preventDefaultKeyboard;
+
   @override
   _ZefyrEditableTextState createState() => _ZefyrEditableTextState();
 }
@@ -110,10 +115,13 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   /// focus, the control will then attach to the keyboard and request that the
   /// keyboard become visible.
   void requestKeyboard() {
-    if (_focusNode.hasFocus)
-      _input.openConnection(widget.controller.plainTextEditingValue);
-    else
+    if (_focusNode.hasFocus) {
+      if (!widget.preventDefaultKeyboard) {
+        _input.openConnection(widget.controller.plainTextEditingValue);
+      }
+    } else {
       FocusScope.of(context).requestFocus(_focusNode);
+    }
   }
 
   void focusOrUnfocusIfNeeded() {

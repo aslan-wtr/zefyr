@@ -32,6 +32,7 @@ class ZefyrEditor extends StatefulWidget {
     this.textCapitalization = TextCapitalization.sentences,
     this.fontFamily,
     this.fontSize,
+    this.preventDefaultKeyboard: false,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -84,6 +85,9 @@ class ZefyrEditor extends StatefulWidget {
 
   /// Font size for the editor text
   final double fontSize;
+
+  /// Prevent default keyboard when focusing, tapping the editor or similar
+  final bool preventDefaultKeyboard;
 
   @override
   _ZefyrEditorState createState() => _ZefyrEditorState();
@@ -208,6 +212,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       obscureText: widget.obscureText,
       autoCorrect: widget.autoCorrect,
       textCapitalization: widget.textCapitalization,
+      preventDefaultKeyboard: widget.preventDefaultKeyboard,
     );
 
     return ZefyrTheme(
