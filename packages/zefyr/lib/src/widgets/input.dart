@@ -16,6 +16,16 @@ class InputConnectionController implements TextInputClient {
     this.textCapitalization,
   ) : assert(onValueChanged != null);
 
+  @override
+  void connectionClosed() {
+    if (hasConnection) {
+      _textInputConnection.connectionClosedReceived();
+      _textInputConnection = null;
+      _lastKnownRemoteTextEditingValue = null;
+      _sentRemoteValues.clear();
+    }
+  }
+
   //
   // New public members
   //
