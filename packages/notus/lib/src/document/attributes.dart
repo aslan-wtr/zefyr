@@ -38,11 +38,12 @@ abstract class NotusAttributeKey<T> {
 abstract class NotusAttributeBuilder<T> implements NotusAttributeKey<T> {
   const NotusAttributeBuilder._(this.key, this.scope);
 
+  @override
   final String key;
   final NotusAttributeScope scope;
-  NotusAttribute<T> get unset => new NotusAttribute<T>._(key, scope, null);
+  NotusAttribute<T> get unset => NotusAttribute<T>._(key, scope, null);
   NotusAttribute<T> withValue(T value) =>
-      new NotusAttribute<T>._(key, scope, value);
+      NotusAttribute<T>._(key, scope, value);
 }
 
 /// Style attribute applicable to a segment of a Notus document.
@@ -86,18 +87,20 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   // Inline attributes
 
   /// Bold style attribute.
-  static const bold = const _BoldAttribute();
+  static const bold = _BoldAttribute();
 
   /// Italic style attribute.
-  static const italic = const _ItalicAttribute();
+  static const italic = _ItalicAttribute();
 
   /// Link style attribute.
-  static const link = const LinkAttributeBuilder._();
+  // ignore: const_eval_throws_exception
+  static const link = LinkAttributeBuilder._();
 
   // Line attributes
 
   /// Heading style attribute.
-  static const heading = const HeadingAttributeBuilder._();
+  // ignore: const_eval_throws_exception
+  static const heading = HeadingAttributeBuilder._();
 
   /// Alias for [NotusAttribute.heading.level1].
   static NotusAttribute<int> get h1 => heading.level1;
@@ -109,7 +112,8 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static NotusAttribute<int> get h3 => heading.level3;
 
   /// Block attribute
-  static const block = const BlockAttributeBuilder._();
+  // ignore: const_eval_throws_exception
+  static const block = BlockAttributeBuilder._();
 
   /// Text color style attribute.
   static const textColor = const _TextColorAttributeBuilder._();
@@ -130,12 +134,14 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   static NotusAttribute<String> get code => block.code;
 
   /// Embed style attribute.
-  static const embed = const EmbedAttributeBuilder._();
+  // ignore: const_eval_throws_exception
+  static const embed = EmbedAttributeBuilder._();
 
   static NotusAttribute _fromKeyValue(String key, dynamic value) {
-    if (!_registry.containsKey(key))
-      throw new ArgumentError.value(
+    if (!_registry.containsKey(key)) {
+      throw ArgumentError.value(
           key, 'No attribute with key "$key" registered.');
+    }
     final builder = _registry[key];
     return builder.withValue(value);
   }
@@ -143,9 +149,11 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   const NotusAttribute._(this.key, this.scope, this.value);
 
   /// Unique key of this attribute.
+  @override
   final String key;
 
   /// Scope of this attribute.
+  @override
   final NotusAttributeScope scope;
 
   /// Value of this attribute.
@@ -164,7 +172,8 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   ///
   /// When composed into a rich text document, unset attributes remove
   /// associated style.
-  NotusAttribute<T> get unset => new NotusAttribute<T>._(key, scope, null);
+  @override
+  NotusAttribute<T> get unset => NotusAttribute<T>._(key, scope, null);
 
   /// Returns `true` if this attribute is an unset attribute.
   bool get isUnset => value == null;
@@ -172,8 +181,9 @@ class NotusAttribute<T> implements NotusAttributeBuilder<T> {
   /// Returns `true` if this is an inline-scoped attribute.
   bool get isInline => scope == NotusAttributeScope.inline;
 
+  @override
   NotusAttribute<T> withValue(T value) =>
-      new NotusAttribute<T>._(key, scope, value);
+      NotusAttribute<T>._(key, scope, value);
 
   @override
   bool operator ==(Object other) {
@@ -201,16 +211,16 @@ class NotusStyle {
   final Map<String, NotusAttribute> _data;
 
   static NotusStyle fromJson(Map<String, dynamic> data) {
-    if (data == null) return new NotusStyle();
+    if (data == null) return NotusStyle();
 
     final result = data.map((String key, dynamic value) {
       var attr = NotusAttribute._fromKeyValue(key, value);
-      return new MapEntry<String, NotusAttribute>(key, attr);
+      return MapEntry<String, NotusAttribute>(key, attr);
     });
-    return new NotusStyle._(result);
+    return NotusStyle._(result);
   }
 
-  NotusStyle() : _data = new Map<String, NotusAttribute>();
+  NotusStyle() : _data = <String, NotusAttribute>{};
 
   /// Returns `true` if this attribute set is empty.
   bool get isEmpty => _data.isEmpty;
@@ -256,9 +266,9 @@ class NotusStyle {
 
   /// Puts [attribute] into this attribute set and returns result as a new set.
   NotusStyle put(NotusAttribute attribute) {
-    final result = new Map<String, NotusAttribute>.from(_data);
+    final result = Map<String, NotusAttribute>.from(_data);
     result[attribute.key] = attribute;
-    return new NotusStyle._(result);
+    return NotusStyle._(result);
   }
 
   /// Merges this attribute set with [attribute] and returns result as a new
@@ -270,19 +280,19 @@ class NotusStyle {
   /// See also [put] method which does not perform compaction and allows
   /// constructing styles with "unset" values.
   NotusStyle merge(NotusAttribute attribute) {
-    final merged = new Map<String, NotusAttribute>.from(_data);
+    final merged = Map<String, NotusAttribute>.from(_data);
     if (attribute.isUnset) {
       merged.remove(attribute.key);
     } else {
       merged[attribute.key] = attribute;
     }
-    return new NotusStyle._(merged);
+    return NotusStyle._(merged);
   }
 
   /// Merges all attributes from [other] into this style and returns result
   /// as a new instance of [NotusStyle].
   NotusStyle mergeAll(NotusStyle other) {
-    var result = new NotusStyle._(_data);
+    var result = NotusStyle._(_data);
     for (var value in other.values) {
       result = result.merge(value);
     }
@@ -292,16 +302,16 @@ class NotusStyle {
   /// Removes [attributes] from this style and returns new instance of
   /// [NotusStyle] containing result.
   NotusStyle removeAll(Iterable<NotusAttribute> attributes) {
-    final merged = new Map<String, NotusAttribute>.from(_data);
+    final merged = Map<String, NotusAttribute>.from(_data);
     attributes.map((item) => item.key).forEach(merged.remove);
-    return new NotusStyle._(merged);
+    return NotusStyle._(merged);
   }
 
   /// Returns JSON-serializable representation of this style.
   Map<String, dynamic> toJson() => _data.isEmpty
       ? null
       : _data.map<String, dynamic>((String _, NotusAttribute value) =>
-          new MapEntry<String, dynamic>(value.key, value.value));
+          MapEntry<String, dynamic>(value.key, value.value));
 
   @override
   bool operator ==(Object other) {
@@ -342,7 +352,7 @@ class LinkAttributeBuilder extends NotusAttributeBuilder<String> {
 
   /// Creates a link attribute with specified link [value].
   NotusAttribute<String> fromString(String value) =>
-      new NotusAttribute<String>._(key, scope, value);
+      NotusAttribute<String>._(key, scope, value);
 }
 
 /// Builder for heading attribute styles.
@@ -355,13 +365,13 @@ class HeadingAttributeBuilder extends NotusAttributeBuilder<int> {
       : super._(_kHeading, NotusAttributeScope.line);
 
   /// Level 1 heading, equivalent of `H1` in HTML.
-  NotusAttribute<int> get level1 => new NotusAttribute<int>._(key, scope, 1);
+  NotusAttribute<int> get level1 => NotusAttribute<int>._(key, scope, 1);
 
   /// Level 2 heading, equivalent of `H2` in HTML.
-  NotusAttribute<int> get level2 => new NotusAttribute<int>._(key, scope, 2);
+  NotusAttribute<int> get level2 => NotusAttribute<int>._(key, scope, 2);
 
   /// Level 3 heading, equivalent of `H3` in HTML.
-  NotusAttribute<int> get level3 => new NotusAttribute<int>._(key, scope, 3);
+  NotusAttribute<int> get level3 => NotusAttribute<int>._(key, scope, 3);
 }
 
 /// Builder for block attribute styles (number/bullet lists, code and quote).
@@ -374,19 +384,19 @@ class BlockAttributeBuilder extends NotusAttributeBuilder<String> {
 
   /// Formats a block of lines as a bullet list.
   NotusAttribute<String> get bulletList =>
-      new NotusAttribute<String>._(key, scope, 'ul');
+      NotusAttribute<String>._(key, scope, 'ul');
 
   /// Formats a block of lines as a number list.
   NotusAttribute<String> get numberList =>
-      new NotusAttribute<String>._(key, scope, 'ol');
+      NotusAttribute<String>._(key, scope, 'ol');
 
   /// Formats a block of lines as a code snippet, using monospace font.
   NotusAttribute<String> get code =>
-      new NotusAttribute<String>._(key, scope, 'code');
+      NotusAttribute<String>._(key, scope, 'code');
 
   /// Formats a block of lines as a quote.
   NotusAttribute<String> get quote =>
-      new NotusAttribute<String>._(key, scope, 'quote');
+      NotusAttribute<String>._(key, scope, 'quote');
 }
 
 /// Builder for text color attribute values.
@@ -432,6 +442,7 @@ class EmbedAttributeBuilder
   @override
   NotusAttribute<Map<String, dynamic>> get unset => EmbedAttribute._(null);
 
+  @override
   NotusAttribute<Map<String, dynamic>> withValue(Map<String, dynamic> value) =>
       EmbedAttribute._(value);
 }
@@ -440,7 +451,7 @@ class EmbedAttributeBuilder
 enum EmbedType { horizontalRule, image }
 
 class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
-  static const _kValueEquality = const MapEquality<String, dynamic>();
+  static const _kValueEquality = MapEquality<String, dynamic>();
   static const _kEmbed = 'embed';
   static const _kHorizontalRuleEmbed = 'hr';
   static const _kImageEmbed = 'image';
@@ -463,7 +474,7 @@ class EmbedAttribute extends NotusAttribute<Map<String, dynamic>> {
   }
 
   @override
-  NotusAttribute<Map<String, dynamic>> get unset => new EmbedAttribute._(null);
+  NotusAttribute<Map<String, dynamic>> get unset => EmbedAttribute._(null);
 
   @override
   bool operator ==(other) {

@@ -4,18 +4,18 @@
 
 import 'dart:convert';
 
-import 'package:quill_delta/quill_delta.dart';
 import 'package:notus/notus.dart';
+import 'package:quill_delta/quill_delta.dart';
 
 class NotusMarkdownCodec extends Codec<Delta, String> {
   const NotusMarkdownCodec();
 
   @override
   Converter<String, Delta> get decoder =>
-      throw new UnimplementedError('Decoding is not implemented yet.');
+      throw UnimplementedError('Decoding is not implemented yet.');
 
   @override
-  Converter<Delta, String> get encoder => new _NotusMarkdownEncoder();
+  Converter<Delta, String> get encoder => _NotusMarkdownEncoder();
 }
 
 class _NotusMarkdownEncoder extends Converter<Delta, String> {
@@ -31,12 +31,12 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
 
   @override
   String convert(Delta input) {
-    final iterator = new DeltaIterator(input);
-    final buffer = new StringBuffer();
-    final lineBuffer = new StringBuffer();
+    final iterator = DeltaIterator(input);
+    final buffer = StringBuffer();
+    final lineBuffer = StringBuffer();
     NotusAttribute<String> currentBlockStyle;
-    NotusStyle currentInlineStyle = new NotusStyle();
-    List<String> currentBlockLines = [];
+    var currentInlineStyle = NotusStyle();
+    var currentBlockLines = [];
 
     void _handleBlock(NotusAttribute<String> blockStyle) {
       if (currentBlockLines.isEmpty) {
@@ -88,7 +88,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
       if (lf == -1) {
         _handleSpan(op.data, op.attributes);
       } else {
-        StringBuffer span = new StringBuffer();
+        var span = StringBuffer();
         for (var i = 0; i < op.data.length; i++) {
           if (op.data.codeUnitAt(i) == 0x0A) {
             if (span.isNotEmpty) {
@@ -114,7 +114,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
   }
 
   String _writeLine(String text, NotusStyle style) {
-    StringBuffer buffer = new StringBuffer();
+    var buffer = StringBuffer();
     if (style.contains(NotusAttribute.heading)) {
       _writeAttribute(buffer, style.get<int>(NotusAttribute.heading));
     }
@@ -125,7 +125,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
   }
 
   String _trimRight(StringBuffer buffer) {
-    String text = buffer.toString();
+    var text = buffer.toString();
     if (!text.endsWith(' ')) return '';
     final result = text.trimRight();
     buffer.clear();
@@ -159,7 +159,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
   }
 
   void _writeAttribute(StringBuffer buffer, NotusAttribute attribute,
-      {bool close: false}) {
+      {bool close = false}) {
     if (attribute == NotusAttribute.bold) {
       _writeBoldTag(buffer);
     } else if (attribute == NotusAttribute.italic) {
@@ -175,7 +175,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
     } else if (attribute.key == NotusAttribute.backgroundColor.key) {
       _writeBackgroundColorTag(buffer);
     } else {
-      throw new ArgumentError('Cannot handle $attribute');
+      throw ArgumentError('Cannot handle $attribute');
     }
   }
 
@@ -188,7 +188,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
   }
 
   void _writeLinkTag(StringBuffer buffer, NotusAttribute<String> link,
-      {bool close: false}) {
+      {bool close = false}) {
     if (close) {
       buffer.write('](${link.value})');
     } else {
@@ -202,7 +202,7 @@ class _NotusMarkdownEncoder extends Converter<Delta, String> {
   }
 
   void _writeBlockTag(StringBuffer buffer, NotusAttribute<String> block,
-      {bool close: false}) {
+      {bool close = false}) {
     if (block == NotusAttribute.code) {
       if (close) {
         buffer.write('\n```');

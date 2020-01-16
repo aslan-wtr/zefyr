@@ -21,17 +21,25 @@ class ZefyrField extends StatefulWidget {
   final ZefyrImageDelegate imageDelegate;
   final ScrollPhysics physics;
 
+  /// The appearance of the keyboard.
+  ///
+  /// This setting is only honored on iOS devices.
+  ///
+  /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
+  final Brightness keyboardAppearance;
+
   const ZefyrField({
     Key key,
     this.decoration,
     this.height,
     this.controller,
     this.focusNode,
-    this.autofocus: false,
+    this.autofocus = false,
     this.mode,
     this.toolbarDelegate,
     this.imageDelegate,
     this.physics,
+    this.keyboardAppearance,
   }) : super(key: key);
 
   @override
@@ -50,6 +58,7 @@ class _ZefyrFieldState extends State<ZefyrField> {
       toolbarDelegate: widget.toolbarDelegate,
       imageDelegate: widget.imageDelegate,
       physics: widget.physics,
+      keyboardAppearance: widget.keyboardAppearance,
     );
 
     if (widget.height != null) {

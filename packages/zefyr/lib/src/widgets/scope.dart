@@ -59,7 +59,7 @@ class ZefyrScope extends ChangeNotifier {
 
   static ZefyrScope of(BuildContext context) {
     final ZefyrScopeAccess widget =
-        context.inheritFromWidgetOfExactType(ZefyrScopeAccess);
+        context.dependOnInheritedWidgetOfExactType<ZefyrScopeAccess>();
     return widget.scope;
   }
 
@@ -169,7 +169,7 @@ class ZefyrScope extends ChangeNotifier {
   }
 
   void updateSelection(TextSelection value,
-      {ChangeSource source: ChangeSource.remote}) {
+      {ChangeSource source = ChangeSource.remote}) {
     assert(isEditable);
     assert(!_disposed);
     _controller.updateSelection(value, source: source);

@@ -27,7 +27,7 @@ class InputConnectionController implements TextInputClient {
   }
 
   //
-  // New public members
+  // public members
   //
 
   final RemoteValueChanged onValueChanged;
@@ -41,18 +41,16 @@ class InputConnectionController implements TextInputClient {
 
   /// Opens or closes input connection based on the current state of
   /// [focusNode] and [value].
-  void openOrCloseConnection(
-    FocusNode focusNode,
-    TextEditingValue value,
-  ) {
+  void openOrCloseConnection(FocusNode focusNode, TextEditingValue value,
+      Brightness keyboardAppearance) {
     if (focusNode.hasFocus && focusNode.consumeKeyboardToken()) {
-      openConnection(value);
+      openConnection(value, keyboardAppearance);
     } else if (!focusNode.hasFocus) {
       closeConnection();
     }
   }
 
-  void openConnection(TextEditingValue value) {
+  void openConnection(TextEditingValue value, Brightness keyboardAppearance) {
     if (!hasConnection) {
       _lastKnownRemoteTextEditingValue = value;
       _textInputConnection = TextInput.attach(
@@ -62,6 +60,7 @@ class InputConnectionController implements TextInputClient {
           obscureText: obscureText,
           autocorrect: autoCorrect,
           inputAction: TextInputAction.newline,
+          keyboardAppearance: keyboardAppearance,
           textCapitalization: textCapitalization,
         ),
       )..setEditingState(value);
@@ -187,5 +186,15 @@ class InputConnectionController implements TextInputClient {
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
     // TODO: implement updateFloatingCursor
+  }
+
+  @override
+  void connectionClosed() {
+    if (hasConnection) {
+      _textInputConnection.connectionClosedReceived();
+      _textInputConnection = null;
+      _lastKnownRemoteTextEditingValue = null;
+      _sentRemoteValues.clear();
+    }
   }
 }

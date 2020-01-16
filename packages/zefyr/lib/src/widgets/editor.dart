@@ -20,9 +20,9 @@ class ZefyrEditor extends StatefulWidget {
     Key key,
     @required this.controller,
     @required this.focusNode,
-    this.autofocus: true,
-    this.mode: ZefyrMode.edit,
-    this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    this.autofocus = true,
+    this.mode = ZefyrMode.edit,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.toolbarDelegate,
     this.imageDelegate,
     this.selectionControls,
@@ -33,6 +33,7 @@ class ZefyrEditor extends StatefulWidget {
     this.fontFamily,
     this.fontSize,
     this.preventDefaultKeyboard: false,
+    this.keyboardAppearance,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
@@ -89,6 +90,13 @@ class ZefyrEditor extends StatefulWidget {
   /// Prevent default keyboard when focusing, tapping the editor or similar
   final bool preventDefaultKeyboard;
 
+  /// The appearance of the keyboard.
+  ///
+  /// This setting is only honored on iOS devices.
+  ///
+  /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
+  final Brightness keyboardAppearance;
+
   @override
   _ZefyrEditorState createState() => _ZefyrEditorState();
 }
@@ -110,7 +118,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
 
   void hideToolbar() {
     if (_toolbarKey == null) return;
-    _scaffold.hideToolbar();
+    _scaffold.hideToolbar(buildToolbar);
     _toolbarKey = null;
   }
 
@@ -200,6 +208,10 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData themeData = Theme.of(context);
+    final Brightness keyboardAppearance =
+        widget.keyboardAppearance ?? themeData.primaryColorBrightness;
+
     Widget editable = ZefyrEditableText(
       controller: _scope.controller,
       focusNode: _scope.focusNode,
@@ -213,6 +225,7 @@ class _ZefyrEditorState extends State<ZefyrEditor> {
       autoCorrect: widget.autoCorrect,
       textCapitalization: widget.textCapitalization,
       preventDefaultKeyboard: widget.preventDefaultKeyboard,
+      keyboardAppearance: keyboardAppearance,
     );
 
     return ZefyrTheme(

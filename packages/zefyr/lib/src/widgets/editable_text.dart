@@ -37,17 +37,19 @@ class ZefyrEditableText extends StatefulWidget {
     @required this.focusNode,
     @required this.imageDelegate,
     this.selectionControls,
-    this.autofocus: true,
-    this.mode: ZefyrMode.edit,
-    this.padding: const EdgeInsets.symmetric(horizontal: 16.0),
+    this.autofocus = true,
+    this.mode = ZefyrMode.edit,
+    this.padding = const EdgeInsets.symmetric(horizontal: 16.0),
     this.physics,
     this.obscureText,
     this.autoCorrect,
     this.textCapitalization,
     this.preventDefaultKeyboard: false,
+    this.keyboardAppearance = Brightness.light,
   })  : assert(mode != null),
         assert(controller != null),
         assert(focusNode != null),
+        assert(keyboardAppearance != null),
         super(key: key);
 
   /// Controls the document being edited.
@@ -88,6 +90,13 @@ class ZefyrEditableText extends StatefulWidget {
   /// Prevent default keyboard when focusing, tapping the editor or similar
   final bool preventDefaultKeyboard;
 
+  /// The appearance of the keyboard.
+  ///
+  /// This setting is only honored on iOS devices.
+  ///
+  /// If unset, defaults to the brightness of [Brightness.light].
+  final Brightness keyboardAppearance;
+
   @override
   _ZefyrEditableTextState createState() => _ZefyrEditableTextState();
 }
@@ -117,7 +126,8 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   void requestKeyboard() {
     if (_focusNode.hasFocus) {
       if (!widget.preventDefaultKeyboard) {
-        _input.openConnection(widget.controller.plainTextEditingValue);
+        _input.openConnection(
+            widget.controller.plainTextEditingValue, widget.keyboardAppearance);
       }
     } else {
       FocusScope.of(context).requestFocus(_focusNode);
@@ -313,8 +323,8 @@ class _ZefyrEditableTextState extends State<ZefyrEditableText>
   }
 
   void _handleFocusChange() {
-    _input.openOrCloseConnection(
-        _focusNode, widget.controller.plainTextEditingValue);
+    _input.openOrCloseConnection(_focusNode,
+        widget.controller.plainTextEditingValue, widget.keyboardAppearance);
     _cursorTimer.startOrStop(_focusNode, selection);
     updateKeepAlive();
   }

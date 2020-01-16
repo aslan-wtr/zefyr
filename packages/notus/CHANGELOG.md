@@ -1,3 +1,12 @@
+## 0.1.5
+
+* Bumped minimum Dart SDK version to 2.2
+* Upgraded dependencies and resolved analyzer errors
+
+## 0.1.4
+
+* Fixed insertion of embeds when selection is not empty (#115)
+
 ## 0.1.3
 
 * Fixed handling of user input around embeds
