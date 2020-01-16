@@ -175,6 +175,11 @@ class InputConnectionController implements TextInputClient {
     }
   }
 
+  @override
+  // TODO: implement currentTextEditingValue
+  TextEditingValue get currentTextEditingValue =>
+      _lastKnownRemoteTextEditingValue;
+
   //
   // Private members
   //
@@ -186,15 +191,5 @@ class InputConnectionController implements TextInputClient {
   @override
   void updateFloatingCursor(RawFloatingCursorPoint point) {
     // TODO: implement updateFloatingCursor
-  }
-
-  @override
-  void connectionClosed() {
-    if (hasConnection) {
-      _textInputConnection.connectionClosedReceived();
-      _textInputConnection = null;
-      _lastKnownRemoteTextEditingValue = null;
-      _sentRemoteValues.clear();
-    }
   }
 }
